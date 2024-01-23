@@ -29,6 +29,8 @@ bool isBoardFull(string gameBoard[ROWS][COLS]);
 int main() {
 	runGame();
 
+	cout << "hi" << endl;
+
 	return 0;
 }
 //run the game
