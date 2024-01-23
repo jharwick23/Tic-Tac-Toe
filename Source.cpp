@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
 using namespace std;
 
 const int ROWS = 3;
@@ -14,8 +15,11 @@ void initializeGameBoard(string gameBoard[ROWS][COLS]);
 //print board
 void printCurrentBoard(string gameBoard[ROWS][COLS]);
 
-//recieve user input 
+//receive user input 
 void getUserInput(bool xTurn, string gameBoard[ROWS][COLS]);
+
+//receive computer input
+void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS]);
 
 //Tells user if the current cell is already occupied
 bool cellAlreadyOccupied(int row, int col, string gameBoard[ROWS][COLS]);
@@ -96,7 +100,7 @@ void printCurrentBoard(string gameBoard[ROWS][COLS]) {
 }
 //recieve user input 
 void getUserInput(bool xTurn, string gameBoard[ROWS][COLS]) {
-	int row = -1, col = -1;
+	int row = 0, col = 0;
 
 	cout << "Enter the row and column you would like to occupy: " << endl;
 	cin >> row >> col;
@@ -118,15 +122,22 @@ void getUserInput(bool xTurn, string gameBoard[ROWS][COLS]) {
 		cout << "That cell is already occupied. Please enter the row and column again: " << endl;
 		cin >> row >> col;
 	}
+	gameBoard[row][col] = "X";
 
-	// Set the cell value based on the player's turn
-	if (xTurn) {
-		gameBoard[row][col] = "X";
-	}
-	else {
-		gameBoard[row][col] = "O";
-	}
 }
+
+//receive computer input
+void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS]) {
+	int row = 0, col = 0;
+
+	do {
+		row = rand() % 3;
+		col = rand() % 3;
+	} while (cellAlreadyOccupied(row, col, gameBoard));
+
+	gameBoard[row][col] = "O";
+}
+
 //Tells user if the current cell is already occupied
 bool cellAlreadyOccupied(int row, int col, string gameBoard[ROWS][COLS]) {
 	return gameBoard[row][col] != " ";
