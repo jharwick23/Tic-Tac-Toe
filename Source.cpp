@@ -6,42 +6,36 @@ using namespace std;
 const int ROWS = 3;
 const int COLS = 3;
 
-//run the game
 void runGame();
 
-//initialize the game board
 void initializeGameBoard(string gameBoard[ROWS][COLS]);
 
-//print board
 void printCurrentBoard(string gameBoard[ROWS][COLS]);
 
-//receive user input 
 void getUserInput(bool xTurn, string gameBoard[ROWS][COLS]);
 
-//receive computer input
-void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS]);
+void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS], int turn);
 
-//Tells user if the current cell is already occupied
+bool checkWinningMove(int& row, int& col, int& rowTwo, int& colTwo, string gameBoard[ROWS][COLS]);
+
 bool cellAlreadyOccupied(int row, int col, string gameBoard[ROWS][COLS]);
 
-//Tells user the winner
 string getWinner(string gameBoard[ROWS][COLS]);
 
-//Tells user if the board is full
 bool isBoardFull(string gameBoard[ROWS][COLS]);
 
 int main() {
 	runGame();
 
-	cout << "hi" << endl;
-
 	return 0;
 }
+
 //run the game
 void runGame() {
 	string winner = "";
 	bool xTurn = true; //start with X
 	string gameBoard[ROWS][COLS];
+	int turn = 0;
 
 	initializeGameBoard(gameBoard);
 
@@ -50,11 +44,12 @@ void runGame() {
 	while (winner == "") {
 		if (xTurn) {
 			cout << "X turn" << endl;
+			getUserInput(xTurn, gameBoard);
 		}
 		else {
 			cout << "O turn" << endl;
+			getComputerInput(xTurn, gameBoard, turn);
 		}
-		getUserInput(xTurn, gameBoard);
 		cout << endl;
 		printCurrentBoard(gameBoard);
 		winner = getWinner(gameBoard);
@@ -125,19 +120,59 @@ void getUserInput(bool xTurn, string gameBoard[ROWS][COLS]) {
 	gameBoard[row][col] = "X";
 
 }
-
 //receive computer input
-void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS]) {
-	int row = 0, col = 0;
+void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS], int turn) {
+	int row = 1, col = 1;
+	int rowTwo = 0, colTwo = 0;
 
-	do {
-		row = rand() % 3;
-		col = rand() % 3;
-	} while (cellAlreadyOccupied(row, col, gameBoard));
+	turn++;
+
+	if (turn == 1) { //On the computer's first turn
+		if (!cellAlreadyOccupied(1, 1, gameBoard)) {
+			gameBoard[row][col] = "O";
+			return;
+		}
+		else {
+			if (!cellAlreadyOccupied(0, 0, gameBoard)) {
+				row = 0;
+				col = 0;
+			}
+			else if (!cellAlreadyOccupied(0, 2, gameBoard)) {
+				row = 0;
+				col = 2;
+			}
+			else if (!cellAlreadyOccupied(2, 2, gameBoard)) {
+				row = 2;
+				col = 2;
+			}
+			else if (!cellAlreadyOccupied(2, 0, gameBoard)) {
+				row = 2;
+				col = 0;
+			}
+			gameBoard[row][col] = "O";
+			return;
+		}
+	}
+
+	if (checkWinningMove(row, col, rowTwo, colTwo, gameBoard)) {
+
+	}
 
 	gameBoard[row][col] = "O";
 }
+//Computer checks if there is a winning move to be made
+bool checkWinningMove(int& row, int& col, int& rowTwo, int& colTwo, string gameBoard[ROWS][COLS]) {
+	if ((gameBoard[0][0] == "O" && gameBoard[1][0] == "O") || (gameBoard[1][0] == "O" && gameBoard[2][0] == "O") || (gameBoard[0][1] == "O" && gameBoard[1][1] == "O") ||
+		(gameBoard[1][1] == "O" && gameBoard[2][1] == "O") || (gameBoard[0][2] == "O" && gameBoard[1][2] == "O") || (gameBoard[1][2] == "O" && gameBoard[2][2] == "O") ||
+		(gameBoard[0][0] == "O" && gameBoard[0][1] == "O") || (gameBoard[0][1] == "O" && gameBoard[0][2] == "O") || (gameBoard[1][0] == "O" && gameBoard[1][1] == "O") ||
+		(gameBoard[1][1] == "O" && gameBoard[1][2] == "O") || (gameBoard[2][0] == "O" && gameBoard[2][1] == "O") || (gameBoard[2][1] == "O" && gameBoard[2][2] == "O") ||
+		(gameBoard[0][0] == "O" && gameBoard[1][1] == "O") || (gameBoard[1][1] == "O" && gameBoard[2][2] == "O") || (gameBoard[0][2] == "O" && gameBoard[1][1] == "O") ||
+		(gameBoard[1][1] == "O" && gameBoard[2][0] == "O")) {
 
+		return true;
+	}
+	return false;
+}
 //Tells user if the current cell is already occupied
 bool cellAlreadyOccupied(int row, int col, string gameBoard[ROWS][COLS]) {
 	return gameBoard[row][col] != " ";
