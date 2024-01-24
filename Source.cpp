@@ -6,6 +6,10 @@ using namespace std;
 const int ROWS = 3;
 const int COLS = 3;
 
+struct WinningPosition {
+	int A1, A2, B1, B2;
+};
+
 void runGame();
 
 void initializeGameBoard(string gameBoard[ROWS][COLS]);
@@ -168,6 +172,13 @@ bool checkWinningMove(int& row, int& col, int& rowTwo, int& colTwo, string gameB
 		(gameBoard[1][1] == "O" && gameBoard[1][2] == "O") || (gameBoard[2][0] == "O" && gameBoard[2][1] == "O") || (gameBoard[2][1] == "O" && gameBoard[2][2] == "O") ||
 		(gameBoard[0][0] == "O" && gameBoard[1][1] == "O") || (gameBoard[1][1] == "O" && gameBoard[2][2] == "O") || (gameBoard[0][2] == "O" && gameBoard[1][1] == "O") ||
 		(gameBoard[1][1] == "O" && gameBoard[2][0] == "O")) {
+
+		for (int i = 0; i < 3; i++) {
+			if ()
+			for (int j = 0; j < 3; j++) {
+				
+			}
+		}
 
 		return true;
 	}
