@@ -1,2 +1,3 @@
 C:\Users\jharw\source\repos\Tic Tac Toe\x64\Debug\Tic Tac Toe.exe
 C:\Users\jharw\Desktop\TicTacToe\x64\Debug\Tic Tac Toe.exe
+C:\Users\jharw\Documents\GitHub\Tic-Tac-Toe\x64\Debug\Tic Tac Toe.exe
