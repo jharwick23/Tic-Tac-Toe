@@ -16,9 +16,11 @@ void getUserInput(bool xTurn, string gameBoard[ROWS][COLS]);
 
 void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS], int& turn);
 
-bool checkWinningMove(string gameBoard[ROWS][COLS]);
+bool checkWinningMove(int row, int col, string gameBoard[ROWS][COLS]);
 
 bool cellAdjacentToO(int row, int col, string gameBoard[ROWS][COLS]);
+
+bool cellAlreadyOccupiedByComp(int row, int col, string gameBoard[ROWS][COLS]);
 
 bool cellAlreadyOccupied(int row, int col, string gameBoard[ROWS][COLS]);
 
@@ -35,9 +37,17 @@ int main() {
 //run the game
 void runGame() {
 	string winner = "";
-	bool xTurn = true; //start with X
+	int chooseTurn = rand() % 2;
+	bool xTurn = true;
 	string gameBoard[ROWS][COLS];
 	int turn = 0;
+
+	if (chooseTurn == 0) {
+		xTurn = true;
+	}
+	else {
+		xTurn = false;
+	}
 
 	initializeGameBoard(gameBoard);
 
@@ -129,6 +139,7 @@ void getUserInput(bool xTurn, string gameBoard[ROWS][COLS]) {
 //receive computer input
 void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS], int &turn) {
 	static int comprow, compcol;
+	int firstCompMove = rand() % 4;
 
 	turn++;
 
@@ -140,19 +151,19 @@ void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS], int &turn) {
 			return;
 		}
 		else {
-			if (!cellAlreadyOccupied(0, 0, gameBoard)) {
+			if (!cellAlreadyOccupied(0, 0, gameBoard) && firstCompMove == 0) {
 				comprow = 0;
 				compcol = 0;
 			}
-			else if (!cellAlreadyOccupied(0, 2, gameBoard)) {
+			else if (!cellAlreadyOccupied(0, 2, gameBoard) && firstCompMove == 1) {
 				comprow = 0;
 				compcol = 2;
 			}
-			else if (!cellAlreadyOccupied(2, 2, gameBoard)) {
+			else if (!cellAlreadyOccupied(2, 2, gameBoard) && firstCompMove == 2) {
 				comprow = 2;
 				compcol = 2;
 			}
-			else if (!cellAlreadyOccupied(2, 0, gameBoard)) {
+			else if (!cellAlreadyOccupied(2, 0, gameBoard) && firstCompMove == 3) {
 				comprow = 2;
 				compcol = 0;
 			}
@@ -161,7 +172,7 @@ void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS], int &turn) {
 		}
 	}
 
-	else if (checkWinningMove(gameBoard)) {
+	else if (checkWinningMove(comprow, compcol, gameBoard)) {
 		return;
 	}
 
@@ -170,88 +181,59 @@ void getComputerInput(bool xTurn, string gameBoard[ROWS][COLS], int &turn) {
 			comprow = rand() % 3;
 			compcol = rand() % 3;
 		} while (cellAlreadyOccupied(comprow, compcol, gameBoard) || !cellAdjacentToO(comprow, compcol, gameBoard));
-		
 		gameBoard[comprow][compcol] = "O";
+
 		return;
 	}
 
 }
 
 //Computer checks if there is a winning move to be made and makes the move if so
-bool checkWinningMove(string gameBoard[ROWS][COLS]) {
-	if ((gameBoard[0][0] == "O" && gameBoard[1][0] == "O") && !cellAlreadyOccupied(2, 0, gameBoard)) {
-		gameBoard[2][0] = "O";
-		return true;
+bool checkWinningMove(int row, int col, string gameBoard[ROWS][COLS]) {
+	int tempRow = 0;
+	int tempCol = 0; //Temp rows, and columns so when cellAlreadyOccupied is true the program uses these variables to place the O there if there is a winning move
+
+	// Goes through all the rows and checks if there is a winning condition and open cell to win with
+	for (int i = 0; i < 3; i++) {
+		int cellOccByComp = 0;
+		bool openCell = false;
+		for (int j = 0; j < 3; j++) {
+			if (cellAlreadyOccupiedByComp(i, j, gameBoard)) {
+				cellOccByComp++;
+			}
+			if (!cellAlreadyOccupied(i, j, gameBoard)) {
+				openCell = true;
+				tempRow = i;
+				tempCol = j;
+			}
+			if ((cellOccByComp == 2) && openCell) {
+				gameBoard[tempRow][tempCol] = "O";
+				return true;
+			}
+		}
 	}
-	else if ((gameBoard[1][0] == "O" && gameBoard[2][0] == "O") && !cellAlreadyOccupied(0, 0, gameBoard)) {
-		gameBoard[0][0] = "O";
-		return true;
+
+	// Goes through all the columns and checks if there is a winning condition and open cell to win with
+	for (int j = 0; j < 3; j++) {
+		int cellOccByComp = 0;
+		bool openCell = false;
+		for (int i = 0; i < 3; i++) {
+			if (cellAlreadyOccupiedByComp(i, j, gameBoard)) {
+				cellOccByComp++;
+			}
+			if (!cellAlreadyOccupied(i, j, gameBoard)) {
+				openCell = true;
+				tempRow = i;
+				tempCol = j;
+			}
+			if ((cellOccByComp == 2) && openCell) {
+				gameBoard[tempRow][tempCol] = "O";
+				return true;
+			}
+		}
 	}
-	else if ((gameBoard[0][0] == "O" && gameBoard[2][0] == "O") && !cellAlreadyOccupied(1, 0, gameBoard)) {
-		gameBoard[1][0] = "O";
-		return true;
-	}
-	else if ((gameBoard[0][1] == "O" && gameBoard[1][1] == "O") && !cellAlreadyOccupied(2, 1, gameBoard)) {
-		gameBoard[2][1] = "O";
-		return true;
-	}
-	else if ((gameBoard[1][1] == "O" && gameBoard[2][1] == "O") && !cellAlreadyOccupied(0, 1, gameBoard)) {
-		gameBoard[0][1] = "O";
-		return true;
-	}
-	else if ((gameBoard[0][1] == "O" && gameBoard[2][1] == "O") && !cellAlreadyOccupied(1, 0, gameBoard)) {
-		gameBoard[1][0] = "O";
-		return true;
-	}
-	else if ((gameBoard[0][2] == "O" && gameBoard[1][2] == "O") && !cellAlreadyOccupied(2, 2, gameBoard)) {
-		gameBoard[2][2] = "O";
-		return true;
-	}
-	else if ((gameBoard[1][2] == "O" && gameBoard[2][2] == "O") && !cellAlreadyOccupied(0, 2, gameBoard)) {
-		gameBoard[0][2] = "O";
-		return true;
-	}
-	else if ((gameBoard[0][2] == "O" && gameBoard[2][2] == "O") && !cellAlreadyOccupied(1, 2, gameBoard)) {
-		gameBoard[1][2] = "O";
-		return true;
-	}
-	else if ((gameBoard[0][0] == "O" && gameBoard[0][1] == "O") && !cellAlreadyOccupied(0, 2, gameBoard)) {
-		gameBoard[0][2] = "O";
-		return true;
-	}
-	else if ((gameBoard[0][1] == "O" && gameBoard[0][2] == "O") && !cellAlreadyOccupied(0, 0, gameBoard)) {
-		gameBoard[0][0] = "O";
-		return true;
-	}
-	else if ((gameBoard[0][0] == "O" && gameBoard[0][2] == "O") && !cellAlreadyOccupied(0, 1, gameBoard)) {
-		gameBoard[0][1] = "O";
-		return true;
-	}
-	else if ((gameBoard[1][0] == "O" && gameBoard[1][1] == "O") && !cellAlreadyOccupied(1, 2, gameBoard)) {
-		gameBoard[1][2] = "O";
-		return true;
-	}
-	else if ((gameBoard[1][1] == "O" && gameBoard[1][2] == "O") && !cellAlreadyOccupied(1, 0, gameBoard)) {
-		gameBoard[1][0] = "O";
-		return true;
-	}
-	else if ((gameBoard[1][0] == "O" && gameBoard[1][2] == "O") && !cellAlreadyOccupied(1, 1, gameBoard)) {
-		gameBoard[1][1] = "O";
-		return true;
-	}
-	else if ((gameBoard[2][0] == "O" && gameBoard[2][1] == "O") && !cellAlreadyOccupied(2, 2, gameBoard)) {
-		gameBoard[2][2] = "O";
-		return true;
-	}
-	else if ((gameBoard[2][1] == "O" && gameBoard[2][2] == "O") && !cellAlreadyOccupied(2, 0, gameBoard)) {
-		gameBoard[2][0] = "O";
-		return true;
-	}
-	else if ((gameBoard[2][0] == "O" && gameBoard[2][2] == "O") && !cellAlreadyOccupied(2, 1, gameBoard)) {
-		gameBoard[2][1] = "O";
-		return true;
-	}
-	else if ((gameBoard[0][0] == "O" && gameBoard[1][1] == "O") && !cellAlreadyOccupied(2, 2, gameBoard)) {
+	// Diagonal conditions
+	if ((gameBoard[0][0] == "O" && gameBoard[1][1] == "O") && !cellAlreadyOccupied(2, 2, gameBoard)) {
 		gameBoard[2][2] = "O";
 		return true;
 	}
@@ -263,6 +245,7 @@ bool checkWinningMove(string gameBoard[ROWS][COLS]) {
 		gameBoard[1][1] = "O";
 		return true;
 	}
+
 	else if ((gameBoard[0][2] == "O" && gameBoard[1][1] == "O") && !cellAlreadyOccupied(2, 0, gameBoard)) {
 		gameBoard[2][0] = "O";
 		return true;
@@ -327,6 +310,10 @@ bool cellAdjacentToO(int row, int col, string gameBoard[ROWS][COLS]) {
 //Tells user if the current cell is already occupied
 bool cellAlreadyOccupied(int row, int col, string gameBoard[ROWS][COLS]) {
 	return gameBoard[row][col] != " ";
+}
+
+bool cellAlreadyOccupiedByComp(int row, int col, string gameBoard[ROWS][COLS]) {
+	return gameBoard[row][col] == "O";
 }
 
 //Tells user the winner
