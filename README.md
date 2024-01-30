@@ -12,6 +12,4 @@
 
        **Center and Corners:** The center and corners are generally strong positions. The AI can prioritize occupying these positions early in the game. (Finished)
 
-       **Adapt to User's Strategy:** The AI can analyze the user's moves and adapt its strategy accordingly. For example, if the user frequently goes for a certain pattern, the AI can adjust its moves to counter that pattern.'
-
 2. Create Graphics for Tic Tac Toe Game using Open GL.
