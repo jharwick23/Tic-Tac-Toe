@@ -4,11 +4,7 @@
 
        **Prioritize Winning Moves:** The AI should check if there is a move that allows it to win on the current turn. If such a move exists, the AI should make that move. (Finished)
 
-       **Block User Wins:** If the user is one move away from winning, the AI should prioritize blocking that winning move.
-
-       **Create Forks:** A fork is a situation where the AI has two ways to win on the next move. The AI can try to create such situations to increase its chances of winning.
-
-       **Block User Forks:** If the user is close to creating a fork (two possible winning moves), the AI should block one of those moves.
+       **Block User Wins:** If the user is one move away from winning, the AI should prioritize blocking that winning move. (Finished)
 
        **Center and Corners:** The center and corners are generally strong positions. The AI can prioritize occupying these positions early in the game. (Finished)
 
